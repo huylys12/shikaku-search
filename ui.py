@@ -5,7 +5,10 @@ WIDTH = 60
 class GUI:
     def __init__(self):
         self.screen = Screen()
+        self.screen.setup(width=600, height=600)
         self.screen.tracer(0)
+
+        self.create_logo()
         self.create_frame()
         self.screen.mainloop()
 
@@ -43,3 +46,10 @@ class GUI:
             drawer.forward(WIDTH*5)
             drawer.right(90)
         self.screen.update()
+
+    def create_logo(self):
+        logo_img = "./images/shikaku-logo.gif"
+        self.screen.addshape(logo_img)
+        logo = Turtle(shape=logo_img)
+        logo.penup()
+        logo.goto(0, 220)
