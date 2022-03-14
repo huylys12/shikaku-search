@@ -1,10 +1,13 @@
 from turtle import Turtle, Screen
 from tkinter import Button
+from data import STATES
 WIDTH = 60
+FONT = ("Merriweather", 22, "bold")
 
 
 class GUI:
     def __init__(self):
+        self.all_segment = []
         self.screen = Screen()
         self.screen.setup(width=600, height=600)
         self.screen.tracer(0)
@@ -13,6 +16,9 @@ class GUI:
         self.create_hint_button()
         self.create_new_button()
         self.create_frame()
+
+        # Check for this command 
+        self.initialize_state(STATES["s1"])
         self.screen.mainloop()
 
     def create_frame(self):
@@ -66,3 +72,13 @@ class GUI:
         canvas = self.screen.getcanvas()
         new_button = Button(canvas.master, text="New")
         canvas.create_window(135, -180, window=new_button)
+
+    def initialize_state(self, state_data: dict):
+        start_pos = -WIDTH * 2
+        for pos, val in state_data.items():
+            segment = Turtle()
+            segment.hideturtle()
+            segment.penup()
+            segment.goto(start_pos + 60*pos[1], start_pos + 60*pos[0] - 15)
+            segment.write(val, move=True, align='center', font=FONT)
+            self.all_segment.append(segment)
