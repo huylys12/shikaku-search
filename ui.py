@@ -1,4 +1,5 @@
 from turtle import Turtle, Screen
+from tkinter import Button
 WIDTH = 60
 
 
@@ -9,6 +10,8 @@ class GUI:
         self.screen.tracer(0)
 
         self.create_logo()
+        self.create_hint_button()
+        self.create_new_button()
         self.create_frame()
         self.screen.mainloop()
 
@@ -52,4 +55,14 @@ class GUI:
         self.screen.addshape(logo_img)
         logo = Turtle(shape=logo_img)
         logo.penup()
-        logo.goto(0, 220)
+        logo.goto(0, 230)
+
+    def create_hint_button(self):
+        canvas = self.screen.getcanvas()
+        hint_button = Button(canvas.master, text="Hint")
+        canvas.create_window(90, -180, window=hint_button)
+    
+    def create_new_button(self):
+        canvas = self.screen.getcanvas()
+        new_button = Button(canvas.master, text="New")
+        canvas.create_window(135, -180, window=new_button)
