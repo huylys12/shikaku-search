@@ -1,3 +1,6 @@
+import random
+
+
 class Block:
     def __init__(self, pos: tuple, num):
         super().__init__()
@@ -9,10 +12,18 @@ class Block:
 
 
 class BlockManager:
-    def __init__(self, data: dict):
-        self.init_data = data 
+    def __init__(self, all_data: list):
+        self.all_data = all_data
+        self.init_data = {}
         self.all_block = []
+        self.generate()
         self.create()
+
+    def generate(self):
+        index = random.randint(1, len(self.all_data))
+        data = self.all_data[index]
+        self.init_data = data
+        self.all_data.remove(data)
 
     def create(self):
         for pos, val in self.init_data.items():
