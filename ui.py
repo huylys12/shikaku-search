@@ -11,6 +11,7 @@ class GUI:
         # list Turtle
         self.all_segment = []
         self.screen = Screen()
+        self.screen.title("Shikaku - Puzzle Game")
         self.screen.setup(width=600, height=600)
         
         self.screen.tracer(0)
@@ -89,8 +90,16 @@ class GUI:
         for segment in self.all_segment:
             segment.clear()
         self.all_segment.clear()
+        if self.manager.generate():
+            self.manager.create()
+            self.intialize()
+        else:
+            self.game_over()
 
-        self.manager.generate()
-        self.manager.create()
-        self.intialize()
-  
+    def game_over(self):
+        drawer = Turtle()
+        drawer.hideturtle()
+        drawer.penup()
+        drawer.goto(0, -30)
+        drawer.pencolor('#E83A14')
+        drawer.write('GAME OVER', align='center', font=("Merriweather", 50, 'normal'))

@@ -26,7 +26,10 @@ class BlockManager:
             data = self.all_data[index]
             self.init_data = data
             self.all_data.remove(data)
-        
+            return True
+        else:
+            return False
+
     def create(self):
         self.all_block.clear()
         
