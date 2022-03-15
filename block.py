@@ -20,12 +20,16 @@ class BlockManager:
         self.create()
 
     def generate(self):
-        index = random.randint(1, len(self.all_data))
-        data = self.all_data[index]
-        self.init_data = data
-        self.all_data.remove(data)
-
+        self.init_data.clear()
+        if len(self.all_data) != 0:
+            index = random.randint(0, len(self.all_data) - 1)
+            data = self.all_data[index]
+            self.init_data = data
+            self.all_data.remove(data)
+        
     def create(self):
+        self.all_block.clear()
+        
         for pos, val in self.init_data.items():
             block = Block(pos, val)
             self.all_block.append(block)

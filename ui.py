@@ -86,4 +86,11 @@ class GUI:
         pass
 
     def new(self):
-        pass
+        for segment in self.all_segment:
+            segment.clear()
+        self.all_segment.clear()
+
+        self.manager.generate()
+        self.manager.create()
+        self.intialize()
+  
