@@ -1,22 +1,21 @@
-from turtle import Turtle
-START_POS = -60 *2
-
-
-# use for algorithm
 class Block:
-    def __init__(self, pos: tuple):
+    def __init__(self, pos: tuple, num):
+        super().__init__()
         self.pos_num = pos
         self.start_pos = pos
         self.width = 1
         self.height = 1
-        
+        self.number = num
 
-# use for GUI
-class BlockGraphic(Turtle, Block):
-    def __init__(self, pos: tuple):
-        Turtle.__init__()
-        Block.__init__(pos)
 
-        self.hideturtle()
-        self.penup()
-        self.goto(START_POS + 60*self.pos_num[1], START_POS + 60*self.pos_num[0])
+class BlockManager:
+    def __init__(self, data: dict):
+        self.init_data = data 
+        self.all_block = []
+        self.create()
+
+    def create(self):
+        for pos, val in self.init_data.items():
+            block = Block(pos, val)
+            self.all_block.append(block)
+    
