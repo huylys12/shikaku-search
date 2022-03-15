@@ -10,15 +10,15 @@ class GUI:
         self.all_segment = []
         self.screen = Screen()
         self.screen.setup(width=600, height=600)
+        
         self.screen.tracer(0)
-
         self.create_logo()
         self.create_hint_button()
         self.create_new_button()
         self.create_frame()
-
         # Check for this command 
         self.initialize_state(STATES["s1"])
+        
         self.screen.mainloop()
 
     def create_frame(self):
@@ -80,5 +80,6 @@ class GUI:
             segment.hideturtle()
             segment.penup()
             segment.goto(start_pos + 60*pos[1], start_pos + 60*pos[0] - 15)
-            segment.write(val, move=True, align='center', font=FONT)
+            segment.write(val, move=False, align='center', font=FONT)
+            segment.goto(start_pos + 60*pos[1], start_pos + 60*pos[0])
             self.all_segment.append(segment)
