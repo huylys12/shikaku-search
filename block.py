@@ -10,9 +10,6 @@ class Block:
         self.height = 1
         self.number = num
 
-    def copy(self):
-        temp = Block(self.pos_num, self.number)
-        return temp
 
 class BlockManager:
     def __init__(self, all_data: list):
@@ -25,8 +22,7 @@ class BlockManager:
     def generate(self):
         self.init_data.clear()
         if len(self.all_data) != 0:
-            # index = random.randint(0, len(self.all_data) - 1)
-            index = 0
+            index = random.randint(0, len(self.all_data) - 1)
             data = self.all_data[index]
             self.init_data = data
             self.all_data.remove(data)
