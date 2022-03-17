@@ -1,5 +1,7 @@
 from turtle import Turtle, Screen
 from tkinter import Button, Radiobutton, IntVar, Label
+
+from click import command
 from block import BlockManager, Block
 from search import Solver
 FONT = ("Merriweather", 22, "bold")
@@ -74,24 +76,30 @@ class GUI:
 
     def create_hint_button(self):
         canvas = self.screen.getcanvas()
-        hint_button = Button(canvas.master, text="Hint", command=self.hint)
-        canvas.create_window(130, -180, window=hint_button)
+        self.hint_button = Button(canvas.master, text="Hint", command=self.hint)
+        self.hint_button.config(state="disabled")
+        canvas.create_window(130, -180, window=self.hint_button)
     
+    def active_hint_button(self):
+        self.hint_button.config(state="normal")
+
     def create_new_button(self):
         canvas = self.screen.getcanvas()
-        new_button = Button(canvas.master, text="New Game", command=self.new)
-        canvas.create_window(200, -180, window=new_button)
+        self.new_button = Button(canvas.master, text="New Game", command=self.new)
+        canvas.create_window(200, -180, window=self.new_button)
+
 
     def create_radio_button(self):
         self.radio_state = IntVar()
         canvas = self.screen.getcanvas()
         label = Label(canvas.master, text="Algorithm:")
         label.config(width=10)
-        radiobutton1 = Radiobutton(canvas.master, text="BFS", value=1, variable=self.radio_state)
-        radiobutton2 = Radiobutton(canvas.master, text="Backtracking", value=2, variable=self.radio_state)
+        self.radiobutton1 = Radiobutton(canvas.master, text="BFS", value=1, variable=self.radio_state, command=self.active_hint_button)
+        self.radiobutton2 = Radiobutton(canvas.master, text="Backtracking", value=2, variable=self.radio_state, command=self.active_hint_button)
+        # radiobutton1.activate()
         canvas.create_window(200, -135, window=label)
-        canvas.create_window(200, -105, window=radiobutton1)
-        canvas.create_window(225, -75, window=radiobutton2)
+        canvas.create_window(200, -105, window=self.radiobutton1)
+        canvas.create_window(225, -75, window=self.radiobutton2)
 
     def intialize(self):
         start_pos = -2 * WIDTH
@@ -131,6 +139,7 @@ class GUI:
         
         goal_state = self.manager.goal_state
         if self.step < len(goal_state) - 1:
+            self.new_button.config(state="disabled")
             block = goal_state[self.step]
             self.draw_block(block)
             self.step += 1
@@ -139,13 +148,14 @@ class GUI:
             self.drawer.goto(0, 170)
             self.drawer.pencolor('#092')
             self.drawer.write('Found goal state', align='center', font=("Tahoma", 12, 'normal'))
-            
+            self.new_button.config(state="normal")
 
     def new(self):
         for segment in self.all_segment:
             segment.clear()
         self.drawer.clear()
         self.step = 0
+        self.hint_button.config(state="disabled")
         self.all_segment.clear()
         if self.manager.generate():
             self.manager.create()
