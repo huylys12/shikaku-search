@@ -121,10 +121,10 @@ class GUI:
             self.step += 1
             self.screen.update()
         else:
-            self.drawer.goto(0, -30)
-            self.drawer.pencolor('#E83A14')
-            self.drawer.write('FOUND GOAL STATE', align='center', font=("Merriweather", 50, 'normal'))
-
+            self.drawer.goto(0, 170)
+            self.drawer.pencolor('#092')
+            self.drawer.write('Found goal state', align='center', font=("Tahoma", 12, 'normal'))
+            
 
     def new(self):
         for segment in self.all_segment:
