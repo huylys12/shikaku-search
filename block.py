@@ -16,6 +16,7 @@ class BlockManager:
         self.all_data = all_data
         self.init_data = {}
         self.all_block = []
+        self.goal_state = []
         self.generate()
         self.create()
 
