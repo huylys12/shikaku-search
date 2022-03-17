@@ -1,5 +1,5 @@
 from turtle import Turtle, Screen
-from tkinter import Button
+from tkinter import Button, Radiobutton, IntVar, Label
 from block import BlockManager, Block
 from search import Solver
 FONT = ("Merriweather", 22, "bold")
@@ -21,6 +21,7 @@ class GUI:
         self.create_logo()
         self.create_hint_button()
         self.create_new_button()
+        self.create_radio_button()
         self.create_frame()
         self.intialize()
 
@@ -74,12 +75,23 @@ class GUI:
     def create_hint_button(self):
         canvas = self.screen.getcanvas()
         hint_button = Button(canvas.master, text="Hint", command=self.hint)
-        canvas.create_window(90, -180, window=hint_button)
+        canvas.create_window(130, -180, window=hint_button)
     
     def create_new_button(self):
         canvas = self.screen.getcanvas()
-        new_button = Button(canvas.master, text="New", command=self.new)
-        canvas.create_window(135, -180, window=new_button)
+        new_button = Button(canvas.master, text="New Game", command=self.new)
+        canvas.create_window(200, -180, window=new_button)
+
+    def create_radio_button(self):
+        self.radio_state = IntVar()
+        canvas = self.screen.getcanvas()
+        label = Label(canvas.master, text="Algorithm:")
+        label.config(width=10)
+        radiobutton1 = Radiobutton(canvas.master, text="BFS", value=1, variable=self.radio_state)
+        radiobutton2 = Radiobutton(canvas.master, text="Backtracking", value=2, variable=self.radio_state)
+        canvas.create_window(200, -135, window=label)
+        canvas.create_window(200, -105, window=radiobutton1)
+        canvas.create_window(225, -75, window=radiobutton2)
 
     def intialize(self):
         start_pos = -2 * WIDTH
@@ -111,7 +123,10 @@ class GUI:
 
     def hint(self):
         if self.step == 0:
-            goal_node = self.solver.bfs()
+            if self.radio_state.get() == 1:
+                goal_node = self.solver.bfs()
+            elif self.radio_state.get() == 2:
+                goal_node = self.solver.backtracking()
             self.manager.goal_state = goal_node.state
         
         goal_state = self.manager.goal_state

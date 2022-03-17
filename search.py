@@ -9,9 +9,25 @@ class PuzzleState:
         self.is_filled = is_filled
 
     def is_goal_state(self):
-        if self.index >= len(self.state):
-            return True
-        return False
+        for row in range(5):
+            if False in self.is_filled[row]:
+                return False
+
+        return True
+    
+    def update_is_filled(self):
+        index_update = self.index - 1
+        block_update = self.state[index_update]
+        start_pos = block_update.start_pos
+        pos_num = block_update.pos_num
+        width = block_update.width
+        height = block_update.height
+        
+        for row in range(start_pos[0], start_pos[0] + height):
+            for col in range(start_pos[1], start_pos[1] + width):
+                if pos_num[0] == row and pos_num[1] == col:
+                    continue
+                self.is_filled[row][col] = True
 
 
 class Solver:
@@ -22,6 +38,7 @@ class Solver:
         self.step = 0
 
     def bfs(self):
+        self.step = 0
         is_filled = [[False for _ in range(5)] for _ in range(5)]
         for block in self.init_state:
             row = block.pos_num[0]   
@@ -32,23 +49,63 @@ class Solver:
 
         while queue:
             self.walker = queue.popleft()
+            self.walker.update_is_filled()
             if self.walker.is_goal_state():
-                print("Found goal state")
+                # print("Found goal state")
+                print(f"BFS walkthrough {self.step} states.")
                 self.goal_state = self.walker
                 return self.walker
 
-            posible_node = self.next_state()
+            posible_node = self.generate_state()
             if posible_node:
                 for state in posible_node:
                     queue.append(state)
             
             self.step += 1
+
         # if not fount goal state
         print("Not Found Goal State")
 
-    def next_state(self):
+    def backtracking(self):
+        self.step = 0
+        is_filled = [[False for _ in range(5)] for _ in range(5)]
+        for block in self.init_state:
+            row = block.pos_num[0]   
+            col = block.pos_num[1]
+            is_filled[row][col] = True
+        
+        stack = [PuzzleState(self.init_state, 0, is_filled)]
+        while stack:
+            self.walker = stack.pop()
+            
+            # check conflict
+            index_prev = self.walker.index - 1
+            block_check_conflict = self.walker.state[index_prev]
+
+            if self.is_posible(block_check_conflict, self.walker.is_filled):
+                # update is_filled
+                self.walker.update_is_filled()
+
+                if self.walker.is_goal_state():
+                    # print("Found goal state")
+                    print(f"Backtracking walkthrough {self.step} states.")
+                    self.goal_state = self.walker
+                    return self.walker
+
+                posible_node = self.generate_state()
+                if posible_node:
+                    posible_node = posible_node[::-1]
+                    for state in posible_node:
+                        stack.append(state)
+
+            self.step += 1
+
+        # if not fount goal state
+        print("Not Found Goal State")
+
+    def generate_state(self):
         index = self.walker.index
-        posible_block = self.check()
+        posible_block = self.generate_block()
     
         posible_state = []
         if posible_block:
@@ -56,29 +113,18 @@ class Solver:
                 is_filled = [self.walker.is_filled[row].copy() for row in range(5)]
                 temp = PuzzleState(self.walker.state.copy(), index + 1, is_filled)
                 temp.state[index] = block
-                
-                start_pos = block.start_pos
-                pos_num = block.pos_num
-                width = block.width
-                height = block.height
-                # update is_filled
-                for row in range(start_pos[0], start_pos[0] + height):
-                    for col in range(start_pos[1], start_pos[1] + width):
-                        if pos_num[0] == row and pos_num[1] == col:
-                            continue
-                        temp.is_filled[row][col] = True
-
                 posible_state.append(temp)
 
         return posible_state
 
 
-    def check(self):
+    def generate_block(self):
         """
         return [block, block, block] 1 block trong trang thai dang di
         check block
         tra ve list truong hop kha thi
         """
+        
         posible_block = []
         index = self.walker.index
         block = self.walker.state[index]
@@ -274,6 +320,7 @@ class Solver:
                 posible_block.append(block1)
             if self.is_posible(block2, self.walker.is_filled):
                 posible_block.append(block2)
+        
         return posible_block
 
     def is_posible(self, block: Block, is_filled: list):

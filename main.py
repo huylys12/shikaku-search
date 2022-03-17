@@ -15,6 +15,7 @@ def main():
     #     s += f"{j.start_pos}:{j.width}x{j.height} --->"
     # print(s)
     # print(solver.step)
+
     ui = GUI(manager, solver)
 
 
