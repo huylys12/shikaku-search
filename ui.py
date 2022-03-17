@@ -83,8 +83,33 @@ class GUI:
             segment.write(block.number, align='center', font=FONT)
             self.all_segment.append(segment)
 
+
+    def draw_block(self, block: Block):
+        start_val = -WIDTH * 2 - 30
+        start_pos = block.start_pos
+        width = block.width
+        height = block.height
+
+        drawer = Turtle()
+        drawer.hideturtle()
+        drawer.penup()
+        drawer.goto(start_val + 60*start_pos[1], start_val + 60*start_pos[0])
+        drawer.pendown()
+        drawer.pensize(8)
+        drawer.pencolor("black")
+        for _ in range(2):
+            drawer.forward(60*width)
+            drawer.left(90)
+            drawer.forward(60*height)
+            drawer.left(90)
+        
     def hint(self):
-        pass
+        block = Block((2,3),2)
+        block.height = 2
+        block.width = 3
+        block.start_pos = (1, 2)
+        self.draw_block(block)
+        self.screen.update()
 
     def new(self):
         for segment in self.all_segment:
