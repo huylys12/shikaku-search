@@ -1,13 +1,16 @@
 from turtle import Turtle, Screen
 from tkinter import Button
 from block import BlockManager, Block
+from search import Solver
 FONT = ("Merriweather", 22, "bold")
 WIDTH = 60
 
 
 class GUI:
-    def __init__(self, block_manager: BlockManager):
+    def __init__(self, block_manager: BlockManager, solver: Solver):
+        self.step = 0
         self.manager = block_manager
+        self.solver = solver
         # list Turtle
         self.all_segment = []
         self.screen = Screen()
@@ -20,6 +23,11 @@ class GUI:
         self.create_new_button()
         self.create_frame()
         self.intialize()
+
+        self.drawer = Turtle()
+        self.drawer.hideturtle()
+        self.drawer.penup()
+        
         self.screen.mainloop()
 
     def create_frame(self):
@@ -90,30 +98,39 @@ class GUI:
         width = block.width
         height = block.height
 
-        drawer = Turtle()
-        drawer.hideturtle()
-        drawer.penup()
-        drawer.goto(start_val + 60*start_pos[1], start_val + 60*start_pos[0])
-        drawer.pendown()
-        drawer.pensize(8)
-        drawer.pencolor("black")
+        self.drawer.goto(start_val + 60*start_pos[1], start_val + 60*start_pos[0])
+        self.drawer.pendown()
+        self.drawer.pensize(8)
+        self.drawer.pencolor("black")
         for _ in range(2):
-            drawer.forward(60*width)
-            drawer.left(90)
-            drawer.forward(60*height)
-            drawer.left(90)
-        
+            self.drawer.forward(60*width)
+            self.drawer.left(90)
+            self.drawer.forward(60*height)
+            self.drawer.left(90)
+        self.drawer.penup()
+
     def hint(self):
-        block = Block((2,3),2)
-        block.height = 2
-        block.width = 3
-        block.start_pos = (1, 2)
-        self.draw_block(block)
-        self.screen.update()
+        if self.step == 0:
+            goal_node = self.solver.bfs()
+            self.manager.goal_state = goal_node.state
+        
+        goal_state = self.manager.goal_state
+        if self.step < len(goal_state) - 1:
+            block = goal_state[self.step]
+            self.draw_block(block)
+            self.step += 1
+            self.screen.update()
+        else:
+            self.drawer.goto(0, -30)
+            self.drawer.pencolor('#E83A14')
+            self.drawer.write('FOUND GOAL STATE', align='center', font=("Merriweather", 50, 'normal'))
+
 
     def new(self):
         for segment in self.all_segment:
             segment.clear()
+        self.drawer.clear()
+        self.step = 0
         self.all_segment.clear()
         if self.manager.generate():
             self.manager.create()
