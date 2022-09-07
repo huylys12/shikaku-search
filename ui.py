@@ -1,7 +1,6 @@
 from turtle import Turtle, Screen
 from tkinter import Button, Radiobutton, IntVar, Label
 from tkinter.ttk import Style
-from click import command
 from block import BlockManager, Block
 from search import Solver
 FONT = ("Merriweather", 22, "bold")
